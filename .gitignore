@@ -52,3 +52,40 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+# Ignorar carpetas de Visual Studio/Rider/JetBrains
+.vs/
+.idea/
+bin/
+obj/
+# Archivos de solución
+bin/
+obj/
+
+# Archivos de Visual Studio
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+.vs/
+
+# Archivos de configuración
+*.config
+*.ini
+*.xml
+
+# Archivos de compilación
+*.dll
+*.exe
+*.pdb
+
+# Archivos de registro
+*.log
+
+# Archivos temporales
+*~
+*.bak
+
+# Archivos generados por el sistema operativo
+.DS_Store
+Thumbs.db
