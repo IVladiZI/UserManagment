@@ -1,3 +1,3 @@
 ﻿namespace UserManagement.Domain;
 
-public record Document(string Number);
+public record Document(string NumberDocument);

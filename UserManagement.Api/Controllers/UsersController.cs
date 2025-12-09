@@ -5,12 +5,22 @@ using UserManagement.Application.Users.Commands;
 
 namespace UserManagement.Api.Controllers
 {
+    /// <summary>
+    /// Controlador para la gestión de usuarios.
+    /// Proporciona endpoints para registrar y consultar usuarios.
+    /// </summary>
     [ApiController]
     [Route("api/[controller]")]
     public class UsersController(ISender sender) : ControllerBase
     {
         private readonly ISender _sender = sender;
 
+        /// <summary>
+        /// Registra un nuevo usuario en el sistema.
+        /// </summary>
+        /// <param name="request">Datos del usuario a registrar.</param>
+        /// <param name="ct">Token de cancelación.</param>
+        /// <returns>Identificador del usuario creado.</returns>
         [HttpPost]
         public async Task<IActionResult> RegisterUser([FromBody] CreateUserRequest request, CancellationToken ct)
         {
@@ -25,6 +35,12 @@ namespace UserManagement.Api.Controllers
             return CreatedAtAction(nameof(GetUserById), new { id }, new { Id = id });
         }
 
+        /// <summary>
+        /// Obtiene la información de un usuario por su identificador.
+        /// </summary>
+        /// <param name="id">Identificador único del usuario.</param>
+        /// <param name="ct">Token de cancelación.</param>
+        /// <returns>Datos del usuario encontrado.</returns>
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetUserById(Guid id, CancellationToken ct)
         {

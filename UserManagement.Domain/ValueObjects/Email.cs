@@ -8,7 +8,6 @@ public partial record Email
 {
     public const int MaxLength = 254;
     public string Value { get; }
-
     public Email(string value)
     {
         if (string.IsNullOrWhiteSpace(value) || !EmailRegex().IsMatch(value))
@@ -19,7 +18,6 @@ public partial record Email
 
         Value = value;
     }
-
     public override string ToString() => Value;
 
     [GeneratedRegex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$")]

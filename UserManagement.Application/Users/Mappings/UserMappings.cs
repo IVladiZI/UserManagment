@@ -7,8 +7,8 @@ public static class UserMappings
     public static UserResponse ToResponse(this User user) =>
         new(
             user.Id,
-            $"{user.Name.FirstName} {user.Name.PaternalSurname} {user.Name.MaternalSurname}",
-            user.Document.Number,
+            $"{user.Name.Name} {user.Name.LastName} {user.Name.SecondLastName}",
+            user.Document.NumberDocument,
             user.Email.Value,
             user.BirthDate);  
 }

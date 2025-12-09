@@ -1,3 +1,3 @@
 ﻿namespace UserManagement.Domain;
 
-public record FullName(string FirstName, string PaternalSurname, string MaternalSurname);
+public record FullName(string Name, string LastName, string SecondLastName);
