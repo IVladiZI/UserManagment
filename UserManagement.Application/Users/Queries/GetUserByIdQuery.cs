@@ -1,4 +1,4 @@
-using MediatR;
+using UserManagement.Application.Common.Mediator;
 
 namespace UserManagement.Application.Users.Queries;
 

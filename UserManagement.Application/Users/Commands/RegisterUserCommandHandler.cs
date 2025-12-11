@@ -1,8 +1,8 @@
-using MediatR;
+using UserManagement.Application.Common.Mediator;
 using UserManagement.Domain;
-using UserManagement.Domain.Repositories;
-using UserManagement.Domain.Exceptions;
 using UserManagement.Domain.Errors;
+using UserManagement.Domain.Exceptions;
+using UserManagement.Domain.Repositories;
 
 namespace UserManagement.Application.Users.Commands.RegisterUser;
 
@@ -20,13 +20,17 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, G
     public async Task<Guid> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
         var email = new Email(request.Email);
+        var document = new Document(request.DocumentNumber);
+
+        if (await _userRepository.ExistsByDocumentAsync(document, cancellationToken))
+            throw new BusinessException(BusinessErrorCode.ExistingDocumentNumber, document.NumberDocument);
 
         if (await _userRepository.ExistsByEmailAsync(email, cancellationToken))
-            throw new BusinessException(BusinessErrorCode.InvalidEmailFormat);
+            throw new BusinessException(BusinessErrorCode.ExistingEmail, email.Value);
 
-        var user = new User(
-            new FullName(request.FirstName, request.PaternalSurname, request.MaternalSurname),
-            new Document(request.DocumentNumber),
+        var user = User.Create(
+            new FullName(request.Name, request.LastName, request.SecondLastName),
+            document,
             email,
             request.BirthDate
         );

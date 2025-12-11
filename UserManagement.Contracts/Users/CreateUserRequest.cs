@@ -1,9 +1,9 @@
 namespace UserManagement.Contracts.Users;
 
 public record CreateUserRequest(
-    string FirstName,
-    string PaternalSurname,
-    string MaternalSurname,
+    string Name,
+    string LastName,
+    string SecondLastName,
     string DocumentNumber,
     string Email,
     DateOnly BirthDate);

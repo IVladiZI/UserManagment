@@ -1,7 +1,8 @@
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using UserManagement.Application.Common.Mediator;
+using UserManagement.Application.Users.Commands.RegisterUser;
 using UserManagement.Contracts.Users;
-using UserManagement.Application.Users.Commands;
+using UserManagement.Application.Users.Queries;
 
 namespace UserManagement.Api.Controllers
 {
@@ -24,13 +25,15 @@ namespace UserManagement.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> RegisterUser([FromBody] CreateUserRequest request, CancellationToken ct)
         {
-            var id = await _sender.Send(new RegisterUserCommand(
-                request.FirstName,
-                request.PaternalSurname,
-                request.MaternalSurname,
-                request.DocumentNumber,
-                request.Email,
-                request.BirthDate), ct);
+            var id = await _sender.Send(new RegisterUserCommand
+            {
+                Name = request.Name,
+                LastName = request.LastName,
+                SecondLastName = request.SecondLastName,
+                DocumentNumber = request.DocumentNumber,
+                Email = request.Email,
+                BirthDate = request.BirthDate
+            }, ct);
 
             return CreatedAtAction(nameof(GetUserById), new { id }, new { Id = id });
         }
@@ -44,8 +47,8 @@ namespace UserManagement.Api.Controllers
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetUserById(Guid id, CancellationToken ct)
         {
-            // Aquí puedes implementar la consulta y el mapeo a UserResponse
-            return Ok(); // Implementa la lógica real
+            var result = await _sender.Send(new GetUserByIdQuery(id), ct);
+            return result is null ? NotFound() : Ok(result);
         }
     }
 }

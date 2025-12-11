@@ -3,8 +3,11 @@ namespace UserManagement.Domain.Errors;
 public enum BusinessErrorCode
 {
     InvalidEmailFormat,
+    ExistingEmail,
     InvalidEmailSize,
-    InvalidDocument,
+    InvalidDocumentNumber,
+    ExistingDocumentNumber,
     InvalidFullName,
-    UnderageUser
+    UnderageUser,
+    UserNotFound
 }

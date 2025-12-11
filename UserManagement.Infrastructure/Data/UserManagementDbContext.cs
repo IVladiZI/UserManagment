@@ -14,7 +14,7 @@ public class UserManagementDbContext(DbContextOptions<UserManagementDbContext> o
             builder.HasKey(u => u.Id);
 
             // Mapear FullName como columnas simples
-            builder.OwnsOne(u => u.Name, fn =>
+            builder.OwnsOne(u => u.FullName, fn =>
             {
                 fn.Property(f => f.Name).HasColumnName("FirstName");
                 fn.Property(f => f.LastName).HasColumnName("LastName");

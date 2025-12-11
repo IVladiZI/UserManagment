@@ -1,35 +1,44 @@
-using System.Text.Json;
-using UserManagement.Domain.Exceptions;
+using UserManagement.Api.Abstractions;
+using UserManagement.Api.Observability;
+using UserManagement.Api.ProblemHandling;
 
-namespace UserManagement.Api.Middlewares
+namespace UserManagement.Api.Middlewares;
+
+public class ProblemDetailsMiddleware : IMiddleware
 {
-    public class ProblemDetailsMiddleware(RequestDelegate next)
+    private readonly IExceptionToProblemDetailsMapper _mapper;
+    private readonly IErrorResponseWriter _writer;
+    private readonly IRequestResponseLogger _logger;
+
+    public ProblemDetailsMiddleware(
+        IExceptionToProblemDetailsMapper mapper,
+        IErrorResponseWriter writer,
+        IRequestResponseLogger logger)
     {
-        private readonly RequestDelegate _next = next;
+        _mapper = mapper;
+        _writer = writer;
+        _logger = logger;
+    }
 
-        public async Task InvokeAsync(HttpContext context)
+    public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+    {
+        var startedAt = DateTimeOffset.Now; // usa hora local si prefieres evitar UTC
+        await _logger.BeginCaptureAsync(context);
+
+        try
         {
-            try
-            {
-                await _next(context);
-            }
-            catch (BusinessException ex)
-            {
-                context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                context.Response.ContentType = "application/problem+json";
-
-                var problemDetails = new
-                {
-                    type = $"https://yourdomain.com/errors/{ex.ErrorCode}",
-                    title = "Business validation error",
-                    status = 400,
-                    detail = ex.Message,
-                    instance = context.Request.Path
-                };
-
-                var json = JsonSerializer.Serialize(problemDetails);
-                await context.Response.WriteAsync(json);
-            }
+            await next(context);
+        }
+        catch (Exception ex)
+        {
+            var pd = _mapper.Map(context, ex);
+            // El logger interno ya evita pasar la excepción al provider
+            await _logger.LogErrorAsync(context, ex, startedAt);
+            await _writer.WriteAsync(context, pd);
+        }
+        finally
+        {
+            await _logger.EndCaptureAsync(context);
         }
     }
 }
