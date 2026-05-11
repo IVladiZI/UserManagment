@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using UserManagement.Application.Common.Mediator;
 using UserManagement.Application.Users.Commands.RegisterUser;
-using UserManagement.Contracts.Users;
 using UserManagement.Application.Users.Queries;
+using UserManagement.Contracts.Users;
+using UserManagement.Api.Mappings;
 
 namespace UserManagement.Api.Controllers
 {
@@ -48,7 +49,7 @@ namespace UserManagement.Api.Controllers
         public async Task<IActionResult> GetUserById(Guid id, CancellationToken ct)
         {
             var result = await _sender.Send(new GetUserByIdQuery(id), ct);
-            return result is null ? NotFound() : Ok(result);
+            return result is null ? NotFound() : Ok(result.ToContract());
         }
     }
 }
